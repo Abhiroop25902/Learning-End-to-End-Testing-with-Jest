@@ -1,0 +1,23 @@
+meta {
+  name: Create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/recipes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmNjMTQzNDcxMWExZjA4YzgyMjE3OWQiLCJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiIkMmIkMTAkc0VDeVRyQzc0L0JYNHhrUGpvNC9yT0hJd0NreHV3WkZxdGNqWWFmREhiQTdLTE5HSDZRZzYiLCJfX3YiOjAsImlhdCI6MTcyNDY1MTMwMywiZXhwIjoxNzI1MjU2MTAzfQ.TuYdXLVVKQpMCQdxY22oV_TKtVa33t1JPP8tIArz_CU
+}
+
+body:json {
+  {
+    "name": "moimoi",
+    "difficulty": 3,
+    "vegetarian": true
+  }
+}
