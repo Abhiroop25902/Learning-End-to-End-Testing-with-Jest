@@ -47,5 +47,75 @@ describe('Test the recipes API', () => {
         }),
       );
     });
+
+    it('should not login if password field is empty', async () => {
+      // DATA YOU WANT TO SAVE TO DB
+      const user = {
+        username: 'admin',
+      };
+
+      const res = await request(app).post('/login').send(user);
+
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'username or password can not be empty',
+        }),
+      );
+    });
+
+    it('should not login if username is empty', async () => {
+      // DATA YOU WANT TO SAVE TO DB
+      const user = {
+        password: 'okay',
+      };
+
+      const res = await request(app).post('/login').send(user);
+
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'username or password can not be empty',
+        }),
+      );
+    });
+
+    it('should not login if username does not exists', async () => {
+      // DATA YOU WANT TO SAVE TO DB
+      const user = {
+        username: 'chii',
+        password: 'okay',
+      };
+
+      const res = await request(app).post('/login').send(user);
+
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'Incorrect username or password',
+        }),
+      );
+    });
+
+    it('should not login if password is incorrect', async () => {
+      // DATA YOU WANT TO SAVE TO DB
+      const user = {
+        username: 'admin',
+        password: 'okay1',
+      };
+
+      const res = await request(app).post('/login').send(user);
+
+      expect(res.statusCode).toEqual(400);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'Incorrect username or password',
+        }),
+      );
+    });
   });
 });
