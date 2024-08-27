@@ -118,4 +118,122 @@ describe('Test the recipes API', () => {
       );
     });
   });
+
+  // test create recipes
+  describe('POST/recipes', () => {
+    it('should save new recipe to db', async () => {
+      // DATA you want to save to db
+      const recipes = {
+        name: 'chicken nugget',
+        difficulty: 2,
+        vegetarian: false,
+      };
+
+      const res = await request(app)
+        .post('/recipes')
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(201);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: expect.any(Object),
+        }),
+      );
+
+      id = res.body.data._id;
+    });
+
+    it('should not save new recipe to db, invalid vegetarian value', async () => {
+      // DATA you want to save to db
+      const recipes = {
+        name: 'chicken nugget',
+        difficulty: 3,
+        vegetarian: 'true',
+      };
+
+      const res = await request(app)
+        .post('/recipes')
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'vegetarian field should be boolean',
+        }),
+      );
+    });
+
+    it('should not save new recipe to db, empty name field', async () => {
+      // DATA you want to save to db
+      const recipes = {
+        difficulty: 2,
+        vegetarian: true,
+      };
+
+      const res = await request(app)
+        .post('/recipes')
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'name field can not be empty',
+        }),
+      );
+    });
+
+    it('should not save new recipe to db, invalid difficulty field', async () => {
+      // DATA you want to save to db
+      const recipes = {
+        name: 'jollof rice',
+        difficulty: '2',
+        vegetarian: true,
+      };
+
+      const res = await request(app)
+        .post('/recipes')
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'difficulty field should be a number',
+        }),
+      );
+    });
+
+    it('should not save new recipe to db, invalid token', async () => {
+      // DATA you want to save to db
+      const recipes = {
+        name: 'jollof rice',
+        difficulty: '2',
+        vegetarian: true,
+      };
+
+      const res = await request(app)
+        .post('/recipes')
+        .send(recipes)
+        .set('Authorization', 'Bearer sdfsfsdgsdf');
+
+      expect(res.statusCode).toEqual(403);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          message: 'Unauthorized',
+        }),
+      );
+    });
+  });
 });
