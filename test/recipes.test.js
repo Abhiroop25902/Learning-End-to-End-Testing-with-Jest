@@ -167,6 +167,7 @@ describe('Test the recipes API', () => {
         }),
       );
 
+      // eslint-disable-next-line no-underscore-dangle
       id = res.body.data._id;
     });
 
@@ -346,6 +347,20 @@ describe('Test the recipes API', () => {
         }),
       );
     });
+
+    it('should not retrieve any recipe from the db when internal server error', async () => {
+      jest.spyOn(RecipeService, 'fetchById').mockRejectedValueOnce(new Error());
+      const res = await request(app).get(`/recipes/${id}`);
+
+      expect(res.statusCode).toEqual(500);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'Some error occurred while retrieving recipe details.',
+        }),
+      );
+    });
   });
 
   // Test update recipe
@@ -469,6 +484,30 @@ describe('Test the recipes API', () => {
         }),
       );
     });
+
+    it('should not update recipe when internal server error', async () => {
+      const recipes = {
+        name: 'chicken nugget',
+      };
+
+      jest
+        .spyOn(RecipeService, 'fetchByIdAndUpdate')
+        .mockRejectedValueOnce(new Error());
+
+      const res = await request(app)
+        .patch(`/recipes/${id}`)
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(500);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'An error occurred while updating recipe',
+        }),
+      );
+    });
   });
 
   // Test delete recipe
@@ -496,6 +535,23 @@ describe('Test the recipes API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           message: 'Unauthorized',
+        }),
+      );
+    });
+
+    it('should not delete the specified recipe when internal server error', async () => {
+      jest
+        .spyOn(RecipeService, 'fetchByIdAndDelete')
+        .mockRejectedValueOnce(new Error());
+      const res = await request(app)
+        .delete(`/recipes/${id}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(500);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'An error occurred while deleting recipe',
         }),
       );
     });
