@@ -20,6 +20,7 @@ const RecipesController = {
 
   // Create and Save a new Recipes
   create: async (req, res) => {
+    // eslint-disable-next-line no-console
     console.log('create');
     try {
       // define variables
@@ -97,6 +98,7 @@ const RecipesController = {
 
   // Update the recipes identified by the parameter
   update: async (req, res) => {
+    // eslint-disable-next-line no-console
     console.log('update');
     try {
       // check if req body is empty
