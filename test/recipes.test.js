@@ -236,4 +236,49 @@ describe('Test the recipes API', () => {
       );
     });
   });
+
+  // test get all recipe
+  describe('GET /recipes', () => {
+    it('should retrieve all the recipes in the db', async () => {
+      const res = await request(app).get('/recipes');
+
+      expect(res.statusCode).toEqual(200);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: expect.any(Object),
+        }),
+      );
+    });
+  });
+
+  // test get a particular recipe
+  describe('GET/recipes/:id', () => {
+    it('should retrieve a specific in the db', async () => {
+      const res = await request(app).get(`/recipes/${id}`);
+
+      expect(res.statusCode).toEqual(200);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: expect.any(Object),
+        }),
+      );
+    });
+
+    it('should not retrieve any recipe from the db when invalid id is passed', async () => {
+      const res = await request(app).get('/recipes/sg54j36h54j63vrgfdfg');
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'Recipe with id sg54j36h54j63vrgfdfg does not exist',
+        }),
+      );
+    });
+  });
 });
