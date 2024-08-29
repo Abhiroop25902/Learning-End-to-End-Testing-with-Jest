@@ -346,5 +346,62 @@ describe('Test the recipes API', () => {
         }),
       );
     });
+
+    it('should not update recipe when invalid recipe id', async () => {
+      const recipes = {
+        difficulty: 3,
+      };
+
+      const res = await request(app)
+        .patch('/recipes/34jkhgfh4j5h45hbfdgdf87d8fg')
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'Recipe with id 34jkhgfh4j5h45hbfdgdf87d8fg does not exist',
+        }),
+      );
+    });
+
+    it('should not update recipe when invalid token', async () => {
+      const recipes = {
+        name: 'chicken nugget',
+      };
+
+      const res = await request(app)
+        .patch(`/recipes/${id}`)
+        .send(recipes)
+        .set('Authorization', 'Bearer kjdfhsiuh4h324b2j34b3b42bh4j32b4jh32b4');
+
+      expect(res.statusCode).toEqual(403);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          message: 'Unauthorized',
+        }),
+      );
+    });
+
+    it('should not update recipe when no update passed', async () => {
+      const recipes = {};
+
+      const res = await request(app)
+        .patch(`/recipes/${id}`)
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'field should not be empty',
+        }),
+      );
+    });
   });
 });
