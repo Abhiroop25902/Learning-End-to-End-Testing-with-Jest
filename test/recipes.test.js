@@ -281,4 +281,70 @@ describe('Test the recipes API', () => {
       );
     });
   });
+
+  // Test update recipe
+  describe('PATCH/recipes/:id', () => {
+    it('should update a specific record in db', async () => {
+      const recipes = {
+        name: 'chicken nugget',
+      };
+
+      const res = await request(app)
+        .patch(`/recipes/${id}`)
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(200);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: true,
+          data: expect.any(Object),
+        }),
+      );
+    });
+
+    it('should not update recipe when invalid difficulty', async () => {
+      const recipes = {
+        name: 'jollof rice',
+        difficulty: '2',
+      };
+
+      const res = await request(app)
+        .patch(`/recipes/${id}`)
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'difficulty field should be a number',
+        }),
+      );
+    });
+
+    it('should not update recipe when invalid vegetarian', async () => {
+      const recipes = {
+        name: 'jollof rice',
+        difficulty: 2,
+        vegetarian: 'true',
+      };
+
+      const res = await request(app)
+        .patch(`/recipes/${id}`)
+        .send(recipes)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(400);
+
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: false,
+          message: 'vegetarian field should be boolean',
+        }),
+      );
+    });
+  });
 });
