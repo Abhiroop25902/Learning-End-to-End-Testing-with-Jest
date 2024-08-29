@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/Oyinna/recipe_app#readme",
   "dependencies": {
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
