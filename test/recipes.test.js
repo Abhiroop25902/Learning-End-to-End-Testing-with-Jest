@@ -404,4 +404,34 @@ describe('Test the recipes API', () => {
       );
     });
   });
+
+  // Test delete recipe
+  describe('DELETE/recipes/:id', () => {
+    it('should delete the specified recipe', async () => {
+      const res = await request(app)
+        .delete(`/recipes/${id}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          success: true,
+          message: 'Recipe successfully deleted',
+        }),
+      );
+    });
+
+    it('should not delete the specified recipe when invalid token', async () => {
+      const res = await request(app)
+        .delete(`/recipes/${id}`)
+        .set('Authorization', 'Bearer jk23h5k34b6k3h242kj2h4kjh2');
+
+      expect(res.statusCode).toEqual(403);
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          message: 'Unauthorized',
+        }),
+      );
+    });
+  });
 });
